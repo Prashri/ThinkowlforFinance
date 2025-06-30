@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinkOwl: AI-Powered Transformation for Financial Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        /* Base styles for chart containers - responsive sizing handled by Tailwind classes */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .flowchart-node {
+            border: 2px solid #0A9396;
+            background-color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+            color: #005F73;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .flowchart-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #CA6702;
+            margin: 0 0.5rem;
+            font-weight: bold;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #0A9396, #005F73);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-heading {
+            color: #005F73;
+        }
+        .accent-bg { background-color: #EE9B00; }
+        .accent-text { color: #EE9B00; }
+        .primary-bg { background-color: #005F73; }
+        .primary-text { color: #005F73; }
+        .secondary-text { color: #0A9396; }
+        .tertiary-text { color: #94D2BD; }
+        .metric-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.25rem; /* Adjusted for better fit */
+            font-weight: bold;
+            color: #005F73;
+            text-align: center;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease; /* Smooth transition */
+            pointer-events: none; /* Allows hover on chart behind it */
+        }
+        .stat-card:hover .metric-overlay {
+            opacity: 1; /* Visible on hover */
+        }
+    </style>
+</head>
+<body class="text-gray-700 antialiased">
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold primary-text">ThinkOwl <span class="font-light text-gray-500">for Finance</span></h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#challenges" class="text-gray-600 hover:secondary-text transition-colors">Challenges</a>
+                <a href="#use-cases" class="text-gray-600 hover:secondary-text transition-colors">Use Cases</a>
+                <a href="#impact" class="text-600 hover:secondary-text transition-colors">Impact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="bg-gray-50 text-center py-20 px-6">
+            <div class="container mx-auto">
+                <h2 class="text-4xl md:text-6xl font-black gradient-text mb-4">Transforming Financial Services with AI</h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">ThinkOwl leverages an integrated AI suite to resolve critical industry challenges, driving efficiency, enhancing customer experience, and ensuring robust compliance.</p>
+            </div>
+        </section>
+
+        <section id="challenges" class="py-16 md:py-24 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold section-heading">The Compounding Challenges in Finance</h3>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">The industry is under pressure from rising costs, operational bottlenecks, and increasing customer demands.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+                    <div class="stat-card">
+                        <div class="text-6xl accent-text font-black">40%▲</div>
+                        <h4 class="mt-4 text-xl font-bold primary-text">Surge in Compliance Costs</h4>
+                        <p class="mt-2 text-gray-600">Compliance costs have soared since 2019, driven by an overwhelming volume of new regulations that demand constant monitoring and implementation.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="chart-container h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+                            <canvas id="wastedTimeChart"></canvas>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold primary-text">Inefficient Use of Talent</h4>
+                        <p class="mt-2 text-gray-600">Highly skilled professionals spend up to <span class="font-bold accent-text">70%</span> of their time on administrative, non-revenue-generating tasks.</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-6xl accent-text font-black">236</div>
+                        <h4 class="mt-4 text-xl font-bold primary-text">Regulatory Deluge</h4>
+                        <p class="mt-2 text-gray-600">In 2023 alone, the UK's FCA released <span class="font-bold accent-text">236</span> separate publications, illustrating the immense documentation burden.</p>
+                    </div>
+                </div>
+
+                <div class="mt-20">
+                    <h4 class="text-2xl md:text-3xl font-bold text-center section-heading">The Vicious Cycle of Inefficiency</h4>
+                    <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto text-center">Legacy systems create a negative feedback loop where manual work, poor data quality, and operational bottlenecks directly impair the customer experience.</p>
+                    <div class="mt-10 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="flowchart-node">Legacy Systems</div>
+                        <div class="flowchart-arrow">→</div>
+                        <div class="flowchart-node">Manual Workarounds</div>
+                        <div class="flowchart-arrow">→</div>
+                        <div class="flowchart-node">Poor Data Quality</div>
+                        <div class="flowchart-arrow">→</div>
+                        <div class="flowchart-node">Impaired CX</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="use-cases" class="py-16 md:py-24 px-6 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold section-heading">ThinkOwl's High-Impact Use Cases</h3>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Targeted AI solutions to solve the most pressing problems in finance.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="stat-card flex flex-col">
+                        <h4 class="text-xl font-bold primary-text">1. Intelligent Query Resolution</h4>
+                        <p class="mt-2 text-gray-600 flex-grow">Automates responses to routine inquiries 24/7 via multilingual chatbots, using NLP and sentiment analysis to understand and escalate complex issues to the right expert.</p>
+                        <div class="mt-4 chart-container h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+                            <canvas id="queryResolutionChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center text-lg font-semibold">
+                            <span class="primary-text">Before: 15% Bot / 85% Human</span><br>
+                            <span class="secondary-text">After: 85% Bot / 15% Human</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card flex flex-col">
+                        <h4 class="text-xl font-bold primary-text">2. Enhanced Customer Onboarding & KYC</h4>
+                        <p class="mt-2 text-gray-600 flex-grow">Drastically cuts onboarding time by using Extraction AI to pull data from documents, automating workflows, and ensuring AML/KYC compliance checks are met consistently.</p>
+                        <div class="mt-4 chart-container h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+                            <canvas id="onboardingTimeChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center text-lg font-semibold">
+                            <span class="primary-text">Avg. 14 Days</span> → <span class="secondary-text">Avg. 2 Days</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card flex flex-col">
+                        <h4 class="text-xl font-bold primary-text">3. Automated Document Processing</h4>
+                        <p class="mt-2 text-gray-600 flex-grow">Eliminates manual data entry errors by automatically extracting and validating information from invoices, contracts, and reports, improving data quality and speed.</p>
+                        <div class="mt-4 chart-container h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+                            <canvas id="docProcessingChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center text-lg font-semibold">
+                            <span class="primary-text">Error Rate: 8% → 0.5%</span><br>
+                            <span class="secondary-text">Time: 4 Hrs → 0.25 Hrs</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card flex flex-col">
+                        <h4 class="text-xl font-bold primary-text">4. Intelligent Workflow Automation</h4>
+                        <p class="mt-2 text-gray-600 flex-grow">Uses Dispatcher AI and Machine Learning to intelligently route tasks, predict bottlenecks, and automate approvals, ensuring smooth and efficient operations across departments.</p>
+                        <div class="mt-4 chart-container h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+                            <canvas id="workflowAutomationChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center text-lg font-semibold">
+                            <span class="primary-text">Up to 85% Reduction in Bottlenecks</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card flex flex-col">
+                        <h4 class="text-xl font-bold primary-text">5. Proactive Regulatory Monitoring</h4>
+                        <p class="mt-2 text-gray-600 flex-grow">Scans, interprets, and classifies new regulations using NLP and ML. It automates compliance tasks and reporting, reducing risk and freeing up skilled professionals.</p>
+                        <div class="mt-4 chart-container h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+                            <canvas id="regulatoryMonitoringChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center text-lg font-semibold">
+                            <span class="primary-text">Enhanced Coverage & Speed</span><br>
+                            <span class="secondary-text">Drastic Reduction in Manual Effort</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card flex flex-col">
+                        <h4 class="text-xl font-bold primary-text">6. Enhanced Fraud Detection</h4>
+                        <p class="mt-2 text-gray-600 flex-grow">Leverages ML to analyze transaction patterns and customer behavior in real-time, identifying sophisticated fraud attempts that bypass traditional rule-based systems.</p>
+                        <div class="mt-4 chart-container h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
+                            <canvas id="fraudDetectionChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center text-lg font-semibold">
+                            <span class="primary-text">Detection: 65% → 95%</span><br>
+                            <span class="secondary-text">False Positives: 25% → 5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="py-16 md:py-24 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold section-heading">The Strategic Impact of AI Adoption</h3>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Implementing ThinkOwl delivers quantifiable improvements across the entire organization.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="stat-card text-center">
+                        <div class="chart-container h-[200px] sm:h-[220px] md:h-[250px] lg:h-[280px]">
+                            <canvas id="efficiencyImpactChart"></canvas>
+                            <div class="metric-overlay" id="efficiencyMetric"></div>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold primary-text">Operational Efficiency</h4>
+                        <p class="mt-2 text-gray-600">Drastic reduction in manual labor and process turnaround times, e.g., AHT reduced by <span class="font-bold secondary-text">66.7%</span>.</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="chart-container h-[200px] sm:h-[220px] md:h-[250px] lg:h-[280px]">
+                            <canvas id="csatImpactChart"></canvas>
+                            <div class="metric-overlay" id="csatMetric"></div>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold primary-text">Customer Satisfaction</h4>
+                        <p class="mt-2 text-gray-600">Faster, more accurate, and personalized 24/7 service, with AI resolving up to <span class="font-bold secondary-text">70%</span> of online queries.</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="chart-container h-[200px] sm:h-[220px] md:h-[250px] lg:h-[280px]">
+                            <canvas id="complianceImpactChart"></canvas>
+                            <div class="metric-overlay" id="complianceMetric"></div>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold primary-text">Compliance Adherence</h4>
+                        <p class="mt-2 text-gray-600">Reduced risk through automated monitoring and reporting, adhering to rigorous <span class="font-bold secondary-text">ISO Certified</span> standards.</p>
+                    </div >
+                    <div class="stat-card text-center">
+                        <div class="chart-container h-[200px] sm:h-[220px] md:h-[250px] lg:h-[280px]">
+                            <canvas id="revenueImpactChart"></canvas>
+                            <div class="metric-overlay" id="revenueMetric"></div>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold primary-text">Time-to-Revenue</h4>
+                        <p class="mt-2 text-gray-600">Faster client onboarding and resource reallocation to growth, contributing over <span class="font-bold secondary-text">$25 billion</span> in e-commerce sales annually.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="primary-bg text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <h4 class="text-2xl font-bold">Ready to Innovate?</h4>
+            <p class="mt-2 max-w-2xl mx-auto">ThinkOwl provides the strategic AI tools to transform your financial institution from a reactive cost center into a proactive, customer-centric leader. Embrace the future of finance today.</p>
+            <div class="mt-6">
+                <a href="https://www.thinkowl.com/schedule-a-demo?hsCtaTracking=514e8e8b-ff39-4e75-81d8-23e7de894ec5%7C1339662c-73be-429e-be83-f8dd5f3ab26b" target="_blank" class="bg-white text-primary-text font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-100 transition-colors">Schedule a Demo</a>
+            </div>
+        </div>
+        <div class="bg-gray-800 py-4">
+            <p class="text-center text-sm text-gray-400">&copy; 2025 ThinkOwl Infographic. All Rights Reserved. No SVG or Mermaid JS used in this visualization.</p>
+        </div>
+    </footer>
+
+    <script>
+        const brilliantBlues = {
+            primary: '#005F73',
+            secondary: '#0A9396',
+            tertiary: '#94D2BD',
+            accent: '#EE9B00',
+            accentSecondary: '#CA6702',
+            danger: '#AE2012',
+            lightGray: '#E9ECEF'
+        };
+
+        const defaultTooltipConfig = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: '#4b5563'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#4b5563' },
+                    grid: { color: '#e5e7eb' }
+                },
+                x: {
+                    ticks: { color: '#4b5563' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        };
+
+        function wrapLabel(str, maxWidth) {
+            if (str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + ' ' + words[i]).length > maxWidth) {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                } else {
+                    currentLine += ' ' + words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new Chart(document.getElementById('wastedTimeChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Non-Revenue Tasks', 'Client Engagement'],
+                    datasets: [{
+                        label: 'Time Allocation',
+                        data: [70, 30],
+                        backgroundColor: [brilliantBlues.accentSecondary, brilliantBlues.secondary],
+                        borderColor: '#ffffff',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: defaultTooltipConfig.plugins.tooltip
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('queryResolutionChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Before ThinkOwl', 'After ThinkOwl'],
+                    datasets: [
+                        {
+                            label: 'Human Agent',
+                            data: [85, 15],
+                            backgroundColor: brilliantBlues.accentSecondary,
+                        },
+                        {
+                            label: 'Self-Service / Bot',
+                            data: [15, 85],
+                            backgroundColor: brilliantBlues.secondary,
+                        }
+                    ]
+                },
+                options: { ...defaultTooltipConfig, responsive: true, maintainAspectRatio: false, indexAxis: 'y', scales: { x: { stacked: true }, y: { stacked: true } } }
+            });
+
+            new Chart(document.getElementById('onboardingTimeChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Traditional Process', 'With ThinkOwl'],
+                    datasets: [{
+                        label: 'Onboarding Time (Days)',
+                        data: [14, 2],
+                        backgroundColor: [brilliantBlues.accentSecondary, brilliantBlues.secondary],
+                        borderColor: [brilliantBlues.accentSecondary, brilliantBlues.secondary],
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: { ...defaultTooltipConfig, responsive: true, maintainAspectRatio: false, plugins: { ...defaultTooltipConfig.plugins, legend: { display: false } } }
+            });
+
+            new Chart(document.getElementById('docProcessingChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Manual Processing', 'ThinkOwl Automation'],
+                    datasets: [{
+                        label: 'Error Rate (%)',
+                        data: [8, 0.5],
+                        backgroundColor: brilliantBlues.accent,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Time (Hours)',
+                        data: [4, 0.25],
+                        backgroundColor: brilliantBlues.tertiary,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    ...defaultTooltipConfig,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Error Rate (%)' } },
+                        y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Time (Hours)' }, grid: { drawOnChartArea: false } }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('workflowAutomationChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'Process Bottlenecks',
+                        data: [100, 65, 30, 15],
+                        borderColor: brilliantBlues.primary,
+                        backgroundColor: 'rgba(0, 95, 115, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { ...defaultTooltipConfig, responsive: true, maintainAspectRatio: false }
+            });
+
+            new Chart(document.getElementById('regulatoryMonitoringChart'), {
+                type: 'radar',
+                data: {
+                    labels: ['Coverage', 'Speed', 'Risk ID', 'Accuracy', wrapLabel('Manual Effort', 16)],
+                    datasets: [{
+                        label: 'Traditional',
+                        data: [4, 3, 5, 6, 9],
+                        backgroundColor: 'rgba(202, 103, 2, 0.2)',
+                        borderColor: brilliantBlues.accentSecondary,
+                        pointBackgroundColor: brilliantBlues.accentSecondary
+                    }, {
+                        label: 'With ThinkOwl',
+                        data: [9, 8, 9, 8, 2],
+                        backgroundColor: 'rgba(10, 147, 150, 0.2)',
+                        borderColor: brilliantBlues.secondary,
+                        pointBackgroundColor: brilliantBlues.secondary
+                    }]
+                },
+                options: {
+                    ...defaultTooltipConfig, responsive: true, maintainAspectRatio: false, scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            pointLabels: { color: '#4b5563' },
+                            ticks: { backdropColor: '#F8F9FA', color: '#6b7280' }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('fraudDetectionChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Detection Rate (%)', 'False Positives (%)'],
+                    datasets: [
+                        {
+                            label: 'Rule-Based Systems',
+                            data: [65, 25],
+                            backgroundColor: brilliantBlues.accentSecondary,
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'ThinkOwl AI',
+                            data: [95, 5],
+                            backgroundColor: brilliantBlues.secondary,
+                            borderRadius: 5
+                        }
+                    ]
+                },
+                options: { ...defaultTooltipConfig, responsive: true, maintainAspectRatio: false }
+            });
+            
+            const createImpactChart = (id, label, data, color, metricText) => {
+                new Chart(document.getElementById(id), {
+                    type: 'doughnut',
+                    data: {
+                        labels: [label, ''],
+                        datasets: [{
+                            data: data,
+                            backgroundColor: [color, brilliantBlues.lightGray],
+                            borderColor: '#ffffff',
+                            borderWidth: 4,
+                            circumference: 180,
+                            rotation: 270
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            tooltip: { enabled: false },
+                            legend: { display: false }
+                        },
+                        animation: {
+                           animateRotate: true,
+                           animateScale: true
+                        }
+                    }
+                });
+                // Add the metric text to the overlay div
+                const metricDiv = document.getElementById(id.replace('Chart', 'Metric'));
+                if (metricDiv) {
+                    metricDiv.innerHTML = metricText; /* Use innerHTML for potential multi-line text */
+                }
+            };
+
+            createImpactChart('efficiencyImpactChart', 'Efficiency', [66.7, 33.3], brilliantBlues.secondary, '66.7%<br>Reduction');
+            createImpactChart('csatImpactChart', 'CSAT', [70, 30], brilliantBlues.accent, '70%<br>by AI');
+            createImpactChart('complianceImpactChart', 'Compliance', [100, 0], brilliantBlues.primary, '100%<br>Adherence'); /* Updated metric text */
+            createImpactChart('revenueImpactChart', 'Time-to-Revenue', [100, 0], brilliantBlues.accentSecondary, '$25B+<br>Annually');
+        });
+    </script>
+</body>
+</html>
